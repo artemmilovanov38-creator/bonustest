@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const BOT_TOKEN = "ТВОЙ_ТОКЕН";
+const BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN;
 const CHANNEL = "@ArtemMill";
 
 app.post("/check-subscription", async (req, res) => {
