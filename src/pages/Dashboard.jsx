@@ -86,6 +86,32 @@ export default function Dashboard({ user }) {
   }
 
   async function completeTask(task) {
+    if (task.task_type === "telegram_subscribe") {
+
+  const telegramId =
+    tg?.initDataUnsafe?.user?.id;
+
+  const response = await fetch(
+    `https://bonustest.vercel.app/api/check-subscription?telegramId=${telegramId}`
+  );
+
+  const result =
+    await response.json();
+
+  if (!result.subscribed) {
+
+    window.open(
+      "https://t.me/ArtemMill",
+      "_blank"
+    );
+
+    alert(
+      "Сначала подпишитесь на канал"
+    );
+
+    return;
+  }
+}
     if (!dbUser) {
       alert("Пользователь не найден");
       return;
