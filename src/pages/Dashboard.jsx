@@ -184,6 +184,55 @@ export default function Dashboard({ user }) {
       <div className="balance-card">
         <span>Баланс</span>
         <h1>{dbUser?.balance || 0} ₽</h1>
+        <div
+  style={{
+    marginTop: 10,
+    fontSize: 12,
+    wordBreak: "break-all",
+  }}
+>
+  Реферальная ссылка:
+
+  <br />
+
+  https://t.me/BonusSTest_bot?start=
+  {dbUser?.telegram_id}
+</div>
+<div
+  className="task-card"
+  style={{ marginTop: 15 }}
+>
+  <h3>👥 Приглашай друзей</h3>
+
+  <p>
+    За каждого активного друга
+    получай 50 ₽
+  </p>
+
+  <input
+    readOnly
+    value={`https://t.me/BonusSTest_bot?start=${dbUser?.telegram_id}`}
+    style={{
+      width: "100%",
+      padding: "10px",
+      borderRadius: "10px",
+      border: "1px solid #ddd",
+    }}
+  />
+
+  <button
+    className="task-btn"
+    onClick={() => {
+      navigator.clipboard.writeText(
+        `https://t.me/BonusSTest_bot?start=${dbUser?.telegram_id}`
+      );
+
+      alert("Ссылка скопирована");
+    }}
+  >
+    Скопировать ссылку
+  </button>
+</div>
       </div>
      
      <div className="actions">
