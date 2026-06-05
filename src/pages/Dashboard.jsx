@@ -147,6 +147,55 @@ export default function Dashboard({ user }) {
       .from("users")
       .update({ balance: newBalance })
       .eq("id", dbUser.id);
+      const { data: currentUser } = await supabase
+.from("users")
+.select("*")
+.eq("id", dbUser.id)
+.single();
+
+if (
+currentUser?.referrer_id &&
+!currentUser?.referral_rewarded
+) {
+
+const { data: referrer } = await supabase
+.from("users")
+.select("*")
+.eq(
+"telegram_id",
+currentUser.referrer_id
+)
+.single();
+
+if (referrer) {
+
+const refBalance =
+  Number(referrer.balance || 0) + 50;
+
+await supabase
+  .from("users")
+  .update({
+    balance: refBalance,
+    referrals_count:
+      Number(referrer.referrals_count || 0) + 1,
+  })
+  .eq("id", referrer.id);
+
+await supabase
+  .from("users")
+  .update({
+    referral_rewarded: true,
+  })
+  .eq("id", currentUser.id);
+
+alert(
+  "Реферальный бонус начислен!"
+);
+
+
+}
+}
+
 
     const updatedUser = {
       ...dbUser,
