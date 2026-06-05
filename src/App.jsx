@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
+import "../src/lib/telegram";
 
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";

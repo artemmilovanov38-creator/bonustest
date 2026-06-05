@@ -3,6 +3,11 @@ import Withdraw from "./Withdraw";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import "./Dashboard.css";
+import { tg } from "../lib/telegram";
+
+console.log(
+  tg?.initDataUnsafe?.user
+);
 
 export default function Dashboard({ user }) {
   const [tasks, setTasks] = useState([]);
@@ -30,6 +35,13 @@ export default function Dashboard({ user }) {
 
     setTasks(data || []);
   }
+  await supabase
+  .from("users")
+  .update({
+    telegram_id:
+      tg?.initDataUnsafe?.user?.id
+  })
+  .eq("id", dbUser.id);
 
   async function loadCurrentUser() {
     const { data } = await supabase
