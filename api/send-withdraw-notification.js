@@ -4,44 +4,39 @@ const bot = new TelegramBot(
   process.env.TELEGRAM_BOT_TOKEN
 );
 
-export default async function handler(
-  req,
-  res
-) {
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(200).json({
+      message: "API работает. Используй POST-запрос.",
+    });
+  }
 
-  const {
-    amount,
-    username,
-    telegramId,
-  } = req.body;
+  const { amount, username, telegramId } = req.body || {};
 
   try {
-
     await bot.sendMessage(
       917024505,
       `
 🔔 Новая заявка на вывод
 
 Пользователь:
-${username}
+${username || "не указан"}
 
 Telegram ID:
-${telegramId}
+${telegramId || "не указан"}
 
 Сумма:
-${amount} ₽
+${amount || "не указана"} ₽
 `
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
     });
-
   } catch (e) {
-
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
+      error: e.message,
     });
-
   }
 }
