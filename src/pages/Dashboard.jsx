@@ -154,6 +154,15 @@ export default function Dashboard({ user }) {
         <span>Баланс</span>
         <h1>{dbUser?.balance || 0} ₽</h1>
       </div>
+      <div style={{ color: "red" }}>
+  Telegram ID:
+  {tg?.initDataUnsafe?.user?.id}
+</div>
+
+<div style={{ color: "red" }}>
+  Username:
+  {tg?.initDataUnsafe?.user?.username}
+</div>
 
      <div className="actions">
      {isAdmin && (
@@ -162,6 +171,7 @@ export default function Dashboard({ user }) {
     onClick={() =>
       setShowAdmin(!showAdmin)
     }
+    
   >
     ⚙️ Админка
   </button>
