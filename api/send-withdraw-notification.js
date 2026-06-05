@@ -1,14 +1,12 @@
 import TelegramBot from "node-telegram-bot-api";
 
 export default async function handler(req, res) {
-
 try {
-
-```
 const bot = new TelegramBot(
-  process.env.TELEGRAM_BOT_TOKEN
+process.env.TELEGRAM_BOT_TOKEN
 );
 
+```
 await bot.sendMessage(
   "917024505",
   JSON.stringify(req.body)
