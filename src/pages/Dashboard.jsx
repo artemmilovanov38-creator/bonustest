@@ -45,6 +45,7 @@ export default function Dashboard({ user }) {
   .eq("id", dbUser.id);
 
   async function loadCurrentUser() {
+    alert("AUTH ID = " + user.id);
     const { data } = await supabase
       .from("users")
       .select("*")
