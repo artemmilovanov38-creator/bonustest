@@ -19,6 +19,35 @@ export default function Withdraw({ userId }) {
     if (error) {
       alert(error.message);
     } else {
+      try {
+
+await fetch(
+"/api/send-withdraw-notification",
+{
+method: "POST",
+headers: {
+"Content-Type":
+"application/json",
+},
+body: JSON.stringify({
+amount,
+username:
+tg?.initDataUnsafe?.user?.username,
+telegramId:
+tg?.initDataUnsafe?.user?.id,
+}),
+}
+);
+
+} catch (e) {
+console.log(e);
+}
+
+alert("Заявка создана");
+
+setAmount("");
+setWallet("");
+
      const response = await fetch(
 "/api/send-withdraw-notification",
 {
