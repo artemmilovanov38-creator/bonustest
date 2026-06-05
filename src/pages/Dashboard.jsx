@@ -5,17 +5,22 @@ import { supabase } from "../lib/supabase";
 import "./Dashboard.css";
 import { tg } from "../lib/telegram";
 
-useEffect(() => {
-  console.log("TG:", tg);
-  console.log("TG USER:", tg?.initDataUnsafe?.user);
-}, []);
-
 export default function Dashboard({ user }) {
   const [tasks, setTasks] = useState([]);
   const [dbUser, setDbUser] = useState(null);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  useEffect(() => {
+  console.log("TG:", tg);
+  console.log("TG USER:", tg?.initDataUnsafe?.user);
+
+  alert(
+    JSON.stringify(
+      tg?.initDataUnsafe?.user
+    )
+  );
+}, []);
   const isAdmin =
   user.email === "milovanovartem08@mail.ru";
   const [showAdmin, setShowAdmin] = useState(false);
@@ -36,13 +41,6 @@ export default function Dashboard({ user }) {
 
     setTasks(data || []);
   }
-  await supabase
-  .from("users")
-  .update({
-    telegram_id:
-      tg?.initDataUnsafe?.user?.id
-  })
-  .eq("id", dbUser.id);
 
   async function loadCurrentUser() {
     alert("AUTH ID = " + user.id);
