@@ -15,11 +15,11 @@ export default function Dashboard({ user }) {
   console.log("TG:", tg);
   console.log("TG USER:", tg?.initDataUnsafe?.user);
 
-  alert(
-    JSON.stringify(
-      tg?.initDataUnsafe?.user
-    )
-  );
+ alert(
+  JSON.stringify(
+    window.Telegram?.WebApp
+  )
+);
 }, []);
   const isAdmin =
   user.email === "milovanovartem08@mail.ru";
