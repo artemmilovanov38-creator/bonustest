@@ -1,30 +1,26 @@
 import TelegramBot from "node-telegram-bot-api";
 
 export default async function handler(req, res) {
-try {
-const bot = new TelegramBot(
-process.env.TELEGRAM_BOT_TOKEN
-);
+  try {
+    const bot = new TelegramBot(
+      process.env.TELEGRAM_BOT_TOKEN
+    );
 
-```
-await bot.sendMessage(
-  "917024505",
-  JSON.stringify(req.body)
-);
+    await bot.sendMessage(
+      "917024505",
+      JSON.stringify(req.body)
+    );
 
-return res.status(200).json({
-  success: true
-});
-```
+    return res.status(200).json({
+      success: true
+    });
 
-} catch (e) {
+  } catch (e) {
 
-```
-return res.status(500).json({
-  success: false,
-  error: e.message
-});
-```
+    return res.status(500).json({
+      success: false,
+      error: e.message
+    });
 
-}
+  }
 }
