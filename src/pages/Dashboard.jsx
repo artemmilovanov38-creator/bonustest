@@ -14,12 +14,6 @@ export default function Dashboard({ user }) {
   useEffect(() => {
   console.log("TG:", tg);
   console.log("TG USER:", tg?.initDataUnsafe?.user);
-
- alert(
-  JSON.stringify(
-    window.Telegram?.WebApp
-  )
-);
 }, []);
   const isAdmin =
   user.email === "milovanovartem08@mail.ru";
@@ -51,6 +45,17 @@ export default function Dashboard({ user }) {
 
     if (data && data.length > 0) {
       const foundUser = data[0];
+      if (tg?.initDataUnsafe?.user?.id) {
+  await supabase
+    .from("users")
+    .update({
+      telegram_id:
+        tg.initDataUnsafe.user.id,
+      username:
+        tg.initDataUnsafe.user.username,
+    })
+    .eq("id", foundUser.id);
+}
 
       setDbUser(foundUser);
       await loadCompletedTasks(foundUser.id);
@@ -153,16 +158,7 @@ export default function Dashboard({ user }) {
         <span>Баланс</span>
         <h1>{dbUser?.balance || 0} ₽</h1>
       </div>
-      <div style={{ color: "red" }}>
-  Telegram ID:
-  {tg?.initDataUnsafe?.user?.id}
-</div>
-
-<div style={{ color: "red" }}>
-  Username:
-  {tg?.initDataUnsafe?.user?.username}
-</div>
-
+     
      <div className="actions">
      {isAdmin && (
   <button
