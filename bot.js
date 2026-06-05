@@ -28,6 +28,25 @@ const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(TOKEN, {
 polling: true,
 });
+export async function sendAdminNotification(
+  text
+) {
+  try {
+
+    await bot.sendMessage(
+      917024505,
+      text
+    );
+
+  } catch (err) {
+
+    console.log(
+      "Ошибка уведомления",
+      err.message
+    );
+
+  }
+}
 
 bot.onText(/\/start (.+)/, async (msg, match) => {
 

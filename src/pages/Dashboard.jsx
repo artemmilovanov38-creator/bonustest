@@ -167,6 +167,15 @@ currentUser.referrer_id
 )
 .single();
 
+
+console.log(
+  "REF CHECK:",
+  currentUser?.referrer_id,
+  currentUser?.referral_rewarded
+);
+
+console.log("CURRENT USER:", currentUser);
+console.log("REFERRER:", referrer);
 if (referrer) {
 
 const refBalance =
