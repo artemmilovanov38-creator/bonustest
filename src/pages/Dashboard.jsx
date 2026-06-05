@@ -5,9 +5,10 @@ import { supabase } from "../lib/supabase";
 import "./Dashboard.css";
 import { tg } from "../lib/telegram";
 
-console.log(
-  tg?.initDataUnsafe?.user
-);
+useEffect(() => {
+  console.log("TG:", tg);
+  console.log("TG USER:", tg?.initDataUnsafe?.user);
+}, []);
 
 export default function Dashboard({ user }) {
   const [tasks, setTasks] = useState([]);
