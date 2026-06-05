@@ -37,7 +37,7 @@ export default function Dashboard({ user }) {
   }
 
   async function loadCurrentUser() {
-    alert("AUTH ID = " + user.id);
+  
     const { data } = await supabase
       .from("users")
       .select("*")
@@ -45,7 +45,8 @@ export default function Dashboard({ user }) {
 
     if (data && data.length > 0) {
       const foundUser = data[0];
-      if (tg?.initDataUnsafe?.user?.id) {
+
+     if (tg?.initDataUnsafe?.user?.id) {
   await supabase
     .from("users")
     .update({
