@@ -1,3 +1,4 @@
+import { tg } from "../lib/telegram";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
