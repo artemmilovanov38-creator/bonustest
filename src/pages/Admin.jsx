@@ -4,6 +4,13 @@ import { supabase } from "../lib/supabase";
 export default function Admin() {
   const [users, setUsers] = useState([]);
   const [withdraws, setWithdraws] = useState([]);
+  const [stats, setStats] = useState({
+  totalUsers: 0,
+  totalBalance: 0,
+  totalWithdraws: 0,
+  pendingWithdraws: 0,
+  totalReferrals: 0,
+});
   const [title, setTitle] = useState("");
 const [description, setDescription] = useState("");
 const [reward, setReward] = useState("");
@@ -12,8 +19,7 @@ const [taskType, setTaskType] = useState("manual_check");
   
 
   useEffect(() => {
-    loadUsers();
-    loadWithdraws();
+    loadAllData();
   }, []);
 
   async function loadUsers() {
@@ -23,6 +29,29 @@ const [taskType, setTaskType] = useState("manual_check");
 
     setUsers(data || []);
   }
+  async function loadAllData() {
+
+  const { data: usersData } =
+    await supabase
+      .from("users")
+      .select("*");
+
+  const {
+    data: withdrawsData,
+  } = await supabase
+    .from("withdraws")
+    .select("*");
+
+  setUsers(usersData || []);
+  setWithdraws(
+    withdrawsData || []
+  );
+
+  calculateStats(
+    usersData || [],
+    withdrawsData || []
+  );
+}
 
   async function loadWithdraws() {
     const { data } = await supabase
@@ -32,6 +61,43 @@ const [taskType, setTaskType] = useState("manual_check");
 
     setWithdraws(data || []);
   }
+  function calculateStats(
+  usersData,
+  withdrawsData
+) {
+
+  const totalBalance =
+    usersData.reduce(
+      (sum, user) =>
+        sum + Number(user.balance || 0),
+      0
+    );
+
+  const totalReferrals =
+    usersData.reduce(
+      (sum, user) =>
+        sum +
+        Number(
+          user.referrals_count || 0
+        ),
+      0
+    );
+
+  const pendingWithdraws =
+    withdrawsData.filter(
+      (item) =>
+        item.status === "pending"
+    ).length;
+
+  setStats({
+    totalUsers: usersData.length,
+    totalBalance,
+    totalWithdraws:
+      withdrawsData.length,
+    pendingWithdraws,
+    totalReferrals,
+  });
+}
 
  async function approveWithdraw(id) {
   const withdraw = withdraws.find(
@@ -132,6 +198,40 @@ const [taskType, setTaskType] = useState("manual_check");
   return (
     <div className="task-card">
       <h1>Админка</h1>
+      <div
+  style={{
+    display: "grid",
+    gap: 10,
+    marginBottom: 20,
+  }}
+>
+
+  <div>
+    👥 Пользователей:
+    {stats.totalUsers}
+  </div>
+
+  <div>
+    💰 Общий баланс:
+    {stats.totalBalance} ₽
+  </div>
+
+  <div>
+    📨 Заявок:
+    {stats.totalWithdraws}
+  </div>
+
+  <div>
+    ⏳ На проверке:
+    {stats.pendingWithdraws}
+  </div>
+
+  <div>
+    🤝 Рефералов:
+    {stats.totalReferrals}
+  </div>
+
+</div>
       <div
   style={{
     border: "1px solid #ddd",
