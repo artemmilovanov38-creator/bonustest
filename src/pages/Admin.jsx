@@ -53,6 +53,16 @@ loadTasks();
     withdrawsData || []
   );
 }
+async function loadTasks() {
+  const { data } = await supabase
+    .from("tasks")
+    .select("*")
+    .order("id", {
+      ascending: false,
+    });
+
+  setTasks(data || []);
+}
 
   async function loadWithdraws() {
     const { data } = await supabase
@@ -83,16 +93,7 @@ loadTasks();
         ),
       0
     );
-    async function loadTasks() {
-  const { data } = await supabase
-    .from("tasks")
-    .select("*")
-    .order("id", {
-      ascending: false,
-    });
-
-  setTasks(data || []);
-}
+   
 
   const pendingWithdraws =
     withdrawsData.filter(
@@ -183,19 +184,57 @@ loadTasks();
 }
   async function createTask() {
 
-  const { error } = await supabase
-    .from("tasks")
-    .insert({
-      title,
-      description,
-      reward: Number(reward),
-      level: Number(level),
-      task_type: taskType,
-    });
+const { error } = await supabase
+.from("tasks")
+.insert({
+title,
+description,
+reward: Number(reward),
+level: Number(level),
+task_type: taskType,
+});
 
-  if (error) {
-    alert(error.message);
-    async function deleteTask(id) {
+if (error) {
+alert(error.message);
+return;
+}
+
+alert("Задание создано");
+
+setTitle("");
+setDescription("");
+setReward("");
+setLevel("1");
+
+loadTasks();
+}
+
+  async function toggleTask(
+id,
+currentStatus
+) {
+
+await supabase
+.from("tasks")
+.update({
+is_active: !currentStatus,
+})
+.eq("id", id);
+
+loadTasks();
+ }
+await supabase
+.from("tasks")
+.update({
+is_active: !currentStatus,
+})
+.eq("id", id);
+
+loadTasks();
+}
+
+
+ async function deleteTask(id) {
 
   if (
     !confirm(
@@ -211,33 +250,6 @@ loadTasks();
     .eq("id", id);
 
   loadTasks();
-}
-
-async function toggleTask(
-  id,
-  currentStatus
-) {
-
-  await supabase
-    .from("tasks")
-    .update({
-      is_active:
-        !currentStatus,
-    })
-    .eq("id", id);
-
-  loadTasks();
-}
-    return;
-  }
-
-  alert("Задание создано");
-
-  setTitle("");
-  setDescription("");
-  setReward("");
-  setLevel("1");
-}
 
   return (
     <div className="task-card">
