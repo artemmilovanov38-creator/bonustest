@@ -279,88 +279,71 @@ async function rejectReport(id) {
 
   loadTasks();
 }
-async function approveReport(
-  report
-) {
-  if (user.telegram_id) {
-  await fetch(
-    "/api/send-user-notification",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
-      body: JSON.stringify({
-        telegramId:
-          user.telegram_id,
-        text: `🎉 Ваш отчёт проверен
+async function approveReport(report) {
+
+const { data: task } =
+await supabase
+.from("tasks")
+.select("*")
+.eq("id", report.task_id)
+.single();
+
+const { data: user } =
+await supabase
+.from("users")
+.select("*")
+.eq("id", report.user_id)
+.single();
+
+const newBalance =
+Number(user.balance || 0) +
+Number(task.reward || 0);
+
+await supabase
+.from("users")
+.update({
+balance: newBalance,
+})
+.eq("id", user.id);
+
+await supabase
+.from("task_reports")
+.update({
+status: "approved",
+})
+.eq("id", report.id);
+
+if (user?.telegram_id) {
+await fetch(
+"/api/send-user-notification",
+{
+method: "POST",
+headers: {
+"Content-Type":
+"application/json",
+},
+body: JSON.stringify({
+telegramId:
+user.telegram_id,
+
+
+      text: `🎉 Ваш отчёт проверен
+
 
 Начислено:
 ${task.reward} ₽
 
 Баланс пополнен.`,
-      }),
-    }
-  );
+}),
+}
+);
 }
 
-  const { data: task } =
-    await supabase
-      .from("tasks")
-      .select("*")
-      .eq(
-        "id",
-        report.task_id
-      )
-      .single();
+loadReports();
 
-  const { data: user } =
-    await supabase
-      .from("users")
-      .select("*")
-      .eq(
-        "id",
-        report.user_id
-      )
-      .single();
-
-  const newBalance =
-    Number(
-      user.balance || 0
-    ) +
-    Number(
-      task.reward || 0
-    );
-
-  await supabase
-    .from("users")
-    .update({
-      balance:
-        newBalance,
-    })
-    .eq(
-      "id",
-      user.id
-    );
-
-  await supabase
-    .from("task_reports")
-    .update({
-      status:
-        "approved",
-    })
-    .eq(
-      "id",
-      report.id
-    );
-
-  loadReports();
-
-  alert(
-    "Награда начислена"
-  );
+alert("Награда начислена");
 }
+
 
   return (
     <div className="task-card">
