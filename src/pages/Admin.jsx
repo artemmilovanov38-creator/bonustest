@@ -5,6 +5,8 @@ export default function Admin() {
   const [users, setUsers] = useState([]);
   const [withdraws, setWithdraws] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [reports, setReports] =
+  useState([]);
   const [editingTask, setEditingTask] =
   useState(null);
 
@@ -23,10 +25,26 @@ export default function Admin() {
   const [taskType, setTaskType] = useState("manual_check");
 
   useEffect(() => {
+    loadReports();
     loadAllData();
     loadTasks();
   }, []);
 
+  async function loadReports() {
+
+  const { data } =
+    await supabase
+      .from("task_reports")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false,
+        }
+      );
+
+  setReports(data || []);
+}
   async function loadAllData() {
     const { data: usersData } = await supabase
       .from("users")
@@ -213,6 +231,66 @@ export default function Admin() {
 
   loadTasks();
 }
+async function approveReport(
+  report
+) {
+
+  const { data: task } =
+    await supabase
+      .from("tasks")
+      .select("*")
+      .eq(
+        "id",
+        report.task_id
+      )
+      .single();
+
+  const { data: user } =
+    await supabase
+      .from("users")
+      .select("*")
+      .eq(
+        "id",
+        report.user_id
+      )
+      .single();
+
+  const newBalance =
+    Number(
+      user.balance || 0
+    ) +
+    Number(
+      task.reward || 0
+    );
+
+  await supabase
+    .from("users")
+    .update({
+      balance:
+        newBalance,
+    })
+    .eq(
+      "id",
+      user.id
+    );
+
+  await supabase
+    .from("task_reports")
+    .update({
+      status:
+        "approved",
+    })
+    .eq(
+      "id",
+      report.id
+    );
+
+  loadReports();
+
+  alert(
+    "Награда начислена"
+  );
+}
 
   return (
     <div className="task-card">
@@ -276,6 +354,7 @@ export default function Admin() {
 
         <select value={taskType} onChange={(e) => setTaskType(e.target.value)}>
           <option value="manual_check">Ручная проверка</option>
+          <option value="report"> Отчёт</option>
           <option value="telegram_subscribe">Подписка Telegram</option>
           <option value="partner_purchase">Покупка партнера</option>
         </select>
@@ -345,6 +424,61 @@ export default function Admin() {
       ))}
 
       <hr />
+<h2>
+  Отчёты пользователей
+</h2>
+
+{reports.map((report) => (
+  <div
+    key={report.id}
+    style={{
+      border:
+        "1px solid #ddd",
+      padding: 10,
+      marginBottom: 10,
+    }}
+  >
+    <div>
+      Пользователь:
+      {report.user_id}
+    </div>
+
+    <div>
+      Задание:
+      {report.task_id}
+    </div>
+
+    <div>
+      Отчёт:
+      {report.report_text}
+    </div>
+
+    <div>
+      Статус:
+      {report.status}
+    </div>
+
+    <button
+      onClick={() =>
+        approveReport(
+          report
+        )
+      }
+    >
+      ✅ Одобрить
+    </button>
+
+    <button
+      onClick={() =>
+        rejectReport(
+          report.id
+        )
+      }
+    >
+      ❌ Отклонить
+    </button>
+  </div>
+))}
 
       <h2>Заявки на вывод</h2>
       {editingTask && (

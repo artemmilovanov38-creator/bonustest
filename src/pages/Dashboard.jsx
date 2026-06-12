@@ -11,6 +11,8 @@ export default function Dashboard({ user }) {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [reportText, setReportText] =
+  useState("");
   useEffect(() => {
   console.log("TG:", tg);
   console.log("TG USER:", tg?.initDataUnsafe?.user);
@@ -87,6 +89,33 @@ export default function Dashboard({ user }) {
   }
 
   async function completeTask(task) {
+    if (
+  task.task_type === "report"
+) {
+
+  const { error } =
+    await supabase
+      .from("task_reports")
+      .insert({
+        user_id: dbUser.id,
+        task_id: task.id,
+        report_text: reportText,
+        status: "pending",
+      });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert(
+    "Отчёт отправлен на проверку"
+  );
+
+  setReportText("");
+
+  return;
+}
     if (task.task_type === "telegram_subscribe") {
 
   const telegramId =
@@ -346,6 +375,17 @@ alert(
 
             <div className="reward">+{task.reward} ₽</div>
 
+            {task.task_type === "report" && (
+  <textarea
+    placeholder="Введите отчёт"
+    value={reportText}
+    onChange={(e) =>
+      setReportText(
+        e.target.value
+      )
+    }
+  />
+)}
             <button className="task-btn" onClick={() => completeTask(task)}>
               Выполнить
             </button>
