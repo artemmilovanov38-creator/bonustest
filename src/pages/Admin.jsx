@@ -16,10 +16,11 @@ const [description, setDescription] = useState("");
 const [reward, setReward] = useState("");
 const [level, setLevel] = useState("1");
 const [taskType, setTaskType] = useState("manual_check");
-  
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    loadAllData();
+   loadAllData();
+loadTasks();
   }, []);
 
   async function loadUsers() {
@@ -82,6 +83,16 @@ const [taskType, setTaskType] = useState("manual_check");
         ),
       0
     );
+    async function loadTasks() {
+  const { data } = await supabase
+    .from("tasks")
+    .select("*")
+    .order("id", {
+      ascending: false,
+    });
+
+  setTasks(data || []);
+}
 
   const pendingWithdraws =
     withdrawsData.filter(
@@ -184,6 +195,39 @@ const [taskType, setTaskType] = useState("manual_check");
 
   if (error) {
     alert(error.message);
+    async function deleteTask(id) {
+
+  if (
+    !confirm(
+      "Удалить задание?"
+    )
+  ) {
+    return;
+  }
+
+  await supabase
+    .from("tasks")
+    .delete()
+    .eq("id", id);
+
+  loadTasks();
+}
+
+async function toggleTask(
+  id,
+  currentStatus
+) {
+
+  await supabase
+    .from("tasks")
+    .update({
+      is_active:
+        !currentStatus,
+    })
+    .eq("id", id);
+
+  loadTasks();
+}
     return;
   }
 
@@ -316,6 +360,66 @@ const [taskType, setTaskType] = useState("manual_check");
   <button onClick={createTask}>
     ➕ Создать задание
   </button>
+  <h2>Задания</h2>
+
+{tasks.map((task) => (
+  <div
+    key={task.id}
+    style={{
+      border: "1px solid #ddd",
+      padding: 12,
+      marginBottom: 10,
+      borderRadius: 12,
+    }}
+  >
+    <b>{task.title}</b>
+
+    <br />
+
+    Награда:
+    {task.reward} ₽
+
+    <br />
+
+    Уровень:
+    {task.level}
+
+    <br />
+
+    Статус:
+
+    {task.is_active
+      ? " 🟢 Активно"
+      : " 🔴 Скрыто"}
+
+    <br />
+    <br />
+
+    <button
+      onClick={() =>
+        toggleTask(
+          task.id,
+          task.is_active
+        )
+      }
+    >
+      {task.is_active
+        ? "🔒 Скрыть"
+        : "🔓 Активировать"}
+    </button>
+
+    <button
+      style={{
+        marginLeft: 10,
+      }}
+      onClick={() =>
+        deleteTask(task.id)
+      }
+    >
+      🗑️ Удалить
+    </button>
+  </div>
+))}
 </div>
 
       <h2>Пользователи</h2>

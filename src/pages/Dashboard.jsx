@@ -29,9 +29,10 @@ export default function Dashboard({ user }) {
 
   async function loadTasks(level) {
     const { data } = await supabase
-      .from("tasks")
-      .select("*")
-      .eq("level", level);
+  .from("tasks")
+  .select("*")
+  .eq("level", level)
+  .eq("is_active", true);
 
     setTasks(data || []);
   }
