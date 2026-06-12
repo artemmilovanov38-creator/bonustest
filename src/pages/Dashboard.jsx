@@ -98,8 +98,15 @@ export default function Dashboard({ user }) {
 
 if (reportFile) {
 
-  const fileName =
-    `${Date.now()}-${reportFile.name}`;
+ const fileExt =
+  reportFile.name
+    .split(".")
+    .pop();
+
+const fileName =
+  `${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2)}.${fileExt}`;
 
   const { error: uploadError } =
     await supabase.storage
