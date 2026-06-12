@@ -502,6 +502,20 @@ ${task.reward} ₽
       Отчёт:
       {report.report_text}
     </div>
+    {report.screenshot_url && (
+  <>
+    <br />
+
+    <a
+      href={
+        report.screenshot_url
+      }
+      target="_blank"
+    >
+      📸 Открыть скриншот
+    </a>
+  </>
+)}
 
     <div>
       Статус:

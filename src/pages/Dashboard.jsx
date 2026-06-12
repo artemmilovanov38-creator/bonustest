@@ -11,6 +11,8 @@ export default function Dashboard({ user }) {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(1);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [reportFile, setReportFile] =
+  useState(null);
   const [reportText, setReportText] =
   useState("");
   useEffect(() => {
@@ -92,16 +94,50 @@ export default function Dashboard({ user }) {
     if (
   task.task_type === "report"
 ) {
+  let screenshotUrl = null;
+
+if (reportFile) {
+
+  const fileName =
+    `${Date.now()}-${reportFile.name}`;
+
+  const { error: uploadError } =
+    await supabase.storage
+      .from("reports")
+      .upload(
+        fileName,
+        reportFile
+      );
+
+  if (uploadError) {
+    alert(
+      uploadError.message
+    );
+    return;
+  }
+
+  const { data } =
+    supabase.storage
+      .from("reports")
+      .getPublicUrl(
+        fileName
+      );
+
+  screenshotUrl =
+    data.publicUrl;
+}
 
   const { error } =
     await supabase
-      .from("task_reports")
-      .insert({
-        user_id: dbUser.id,
-        task_id: task.id,
-        report_text: reportText,
-        status: "pending",
-      });
+  .from("task_reports")
+  .insert({
+    user_id: dbUser.id,
+    task_id: task.id,
+    report_text: reportText,
+    screenshot_url:
+      screenshotUrl,
+    status: "pending",
+  });
 
   if (error) {
     alert(error.message);
@@ -377,6 +413,7 @@ alert(
 
             {task.task_type === "report" && (
   <textarea
+
     placeholder="Введите отчёт"
     value={reportText}
     onChange={(e) =>
@@ -386,6 +423,15 @@ alert(
     }
   />
 )}
+<input
+  type="file"
+  accept="image/*"
+  onChange={(e) =>
+    setReportFile(
+      e.target.files[0]
+    )
+  }
+/>
             <button className="task-btn" onClick={() => completeTask(task)}>
               Выполнить
             </button>
