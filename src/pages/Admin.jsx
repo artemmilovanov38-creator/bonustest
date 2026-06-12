@@ -5,6 +5,8 @@ export default function Admin() {
   const [users, setUsers] = useState([]);
   const [withdraws, setWithdraws] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [editingTask, setEditingTask] =
+  useState(null);
 
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -183,6 +185,34 @@ export default function Admin() {
 
     loadTasks();
   }
+  async function saveTask() {
+
+  const { error } = await supabase
+    .from("tasks")
+    .update({
+      title: editingTask.title,
+      description:
+        editingTask.description,
+      reward: Number(
+        editingTask.reward
+      ),
+      level: Number(
+        editingTask.level
+      ),
+    })
+    .eq("id", editingTask.id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Задание обновлено");
+
+  setEditingTask(null);
+
+  loadTasks();
+}
 
   return (
     <div className="task-card">
@@ -277,7 +307,14 @@ export default function Admin() {
           Статус: {task.is_active ? "🟢 Активно" : "🔴 Скрыто"}
           <br />
           <br />
-
+          
+          <button
+  onClick={() =>
+    setEditingTask(task)
+  }
+>
+  ✏️ Изменить
+</button>
           <button onClick={() => toggleTask(task.id, task.is_active)}>
             {task.is_active ? "🔒 Скрыть" : "🔓 Активировать"}
           </button>
@@ -310,6 +347,111 @@ export default function Admin() {
       <hr />
 
       <h2>Заявки на вывод</h2>
+      {editingTask && (
+  <div
+    style={{
+      border: "2px solid #4caf50",
+      padding: 15,
+      marginBottom: 20,
+      borderRadius: 12,
+    }}
+  >
+    <h3>
+      Редактирование задания
+    </h3>
+
+    <input
+      value={editingTask.title}
+      onChange={(e) =>
+        setEditingTask({
+          ...editingTask,
+          title:
+            e.target.value,
+        })
+      }
+    />
+
+    <br />
+    <br />
+
+    <input
+      value={
+        editingTask.description
+      }
+      onChange={(e) =>
+        setEditingTask({
+          ...editingTask,
+          description:
+            e.target.value,
+        })
+      }
+    />
+
+    <br />
+    <br />
+
+    <input
+      value={editingTask.reward}
+      onChange={(e) =>
+        setEditingTask({
+          ...editingTask,
+          reward:
+            e.target.value,
+        })
+      }
+    />
+
+    <br />
+    <br />
+
+    <select
+      value={editingTask.level}
+      onChange={(e) =>
+        setEditingTask({
+          ...editingTask,
+          level:
+            e.target.value,
+        })
+      }
+    >
+      <option value="1">
+        Уровень 1
+      </option>
+      <option value="2">
+        Уровень 2
+      </option>
+      <option value="3">
+        Уровень 3
+      </option>
+      <option value="4">
+        Уровень 4
+      </option>
+      <option value="5">
+        Уровень 5
+      </option>
+    </select>
+
+    <br />
+    <br />
+
+    <button
+      onClick={saveTask}
+    >
+      💾 Сохранить
+    </button>
+
+    <button
+      style={{
+        marginLeft: 10,
+      }}
+      onClick={() =>
+        setEditingTask(null)
+      }
+    >
+      ❌ Отмена
+    </button>
+  </div>
+)}
 
       {withdraws.map((item) => (
         <div
