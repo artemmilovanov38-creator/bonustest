@@ -33,27 +33,77 @@ const [taskType, setTaskType] = useState("manual_check");
     setWithdraws(data || []);
   }
 
-  async function approveWithdraw(id) {
-    await supabase
-      .from("withdraws")
-      .update({
-        status: "approved",
-      })
-      .eq("id", id);
+ async function approveWithdraw(id) {
+  const withdraw = withdraws.find(
+    (item) => item.id === id
+  );
 
-    loadWithdraws();
+  await supabase
+    .from("withdraws")
+    .update({
+      status: "approved",
+    })
+    .eq("id", id);
+
+  const user = users.find(
+    (u) => u.id === withdraw.user_id
+  );
+
+  if (user?.telegram_id) {
+    await fetch("/api/send-user-notification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        telegramId: user.telegram_id,
+        text: `✅ Ваша заявка на вывод одобрена
+
+Сумма: ${withdraw.amount} ₽
+
+Средства скоро будут отправлены.`,
+      }),
+    });
   }
 
-  async function rejectWithdraw(id) {
-    await supabase
-      .from("withdraws")
-      .update({
-        status: "rejected",
-      })
-      .eq("id", id);
+  loadWithdraws();
+}
 
-    loadWithdraws();
+ async function rejectWithdraw(id) {
+  const withdraw = withdraws.find(
+    (item) => item.id === id
+  );
+
+  await supabase
+    .from("withdraws")
+    .update({
+      status: "rejected",
+    })
+    .eq("id", id);
+
+  const user = users.find(
+    (u) => u.id === withdraw.user_id
+  );
+
+  if (user?.telegram_id) {
+    await fetch("/api/send-user-notification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        telegramId: user.telegram_id,
+        text: `❌ Ваша заявка на вывод отклонена
+
+Сумма: ${withdraw.amount} ₽
+
+Если есть вопросы — обратитесь в поддержку.`,
+      }),
+    });
   }
+
+  loadWithdraws();
+}
   async function createTask() {
 
   const { error } = await supabase
