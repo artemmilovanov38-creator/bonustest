@@ -190,7 +190,55 @@ export default function Admin() {
 
     loadTasks();
   }
+async function rejectReport(id) {
 
+  const { data: report } =
+    await supabase
+      .from("task_reports")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+  await supabase
+    .from("task_reports")
+    .update({
+      status: "rejected",
+    })
+    .eq("id", id);
+
+  const { data: user } =
+    await supabase
+      .from("users")
+      .select("*")
+      .eq(
+        "id",
+        report.user_id
+      )
+      .single();
+
+  if (user?.telegram_id) {
+
+    await fetch(
+      "/api/send-user-notification",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          telegramId:
+            user.telegram_id,
+
+          text:
+            "❌ Отчёт отклонён. Проверьте условия задания и отправьте новый отчёт.",
+        }),
+      }
+    );
+  }
+
+  loadReports();
+}
   async function deleteTask(id) {
     if (!confirm("Удалить задание?")) {
       return;
@@ -234,6 +282,28 @@ export default function Admin() {
 async function approveReport(
   report
 ) {
+  if (user.telegram_id) {
+  await fetch(
+    "/api/send-user-notification",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        telegramId:
+          user.telegram_id,
+        text: `🎉 Ваш отчёт проверен
+
+Начислено:
+${task.reward} ₽
+
+Баланс пополнен.`,
+      }),
+    }
+  );
+}
 
   const { data: task } =
     await supabase
@@ -479,6 +549,7 @@ async function approveReport(
     </button>
   </div>
 ))}
+
 
       <h2>Заявки на вывод</h2>
       {editingTask && (
