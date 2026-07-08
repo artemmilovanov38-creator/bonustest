@@ -4,6 +4,7 @@ import {
   getUsersForAdmin,
   toggleUserBlock,
   updateUserBalance,
+  updateUserRole,
 } from "../../services/adminUserService";
 
 export default function UsersManager() {
@@ -65,6 +66,16 @@ export default function UsersManager() {
     }
   }
 
+async function handleChangeRole(userId, role) {
+  try {
+    await updateUserRole(userId, role);
+    setMessage("Роль пользователя обновлена");
+    await loadUsers();
+  } catch (error) {
+    setMessage(error.message || "Не удалось изменить роль");
+  }
+}
+
   return (
     <section className="admin-users-manager">
       <div className="section-head">
@@ -109,6 +120,20 @@ export default function UsersManager() {
                 <strong>{Number(item.balance || 0).toLocaleString("ru-RU")} ₽</strong>
               </div>
             </div>
+
+            <div className="admin-user-role-box">
+  <span>Роль</span>
+
+  <select
+    value={item.role || "user"}
+    onChange={(event) => handleChangeRole(item.id, event.target.value)}
+  >
+    <option value="user">User</option>
+    <option value="manager">Manager</option>
+    <option value="admin">Admin</option>
+    <option value="owner">Owner</option>
+  </select>
+</div>
 
             {editingUserId === item.id ? (
               <div className="admin-balance-edit">

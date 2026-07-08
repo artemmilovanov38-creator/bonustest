@@ -28,3 +28,11 @@ export async function toggleUserBlock(userId, isBlocked) {
 
   if (error) throw error;
 }
+export async function updateUserRole(userId, role) {
+  const { error } = await supabase
+    .from("users")
+    .update({ role })
+    .eq("id", userId);
+
+  if (error) throw error;
+}

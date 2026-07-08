@@ -142,7 +142,20 @@ export default function TaskDetails({ user }) {
                 : "отклонено"}
           </p>
         </section>
+        
       ) : (
+        task?.task_url && (
+  <a
+    className="task-open-link"
+    href={task.task_url}
+    target="_blank"
+    rel="noreferrer"
+  >
+    {task.task_button_text || "Открыть задание"}
+  </a>
+)
+        )  (
+        
         <section className="app-card proof-card">
           <h2>Загрузить скриншот</h2>
 

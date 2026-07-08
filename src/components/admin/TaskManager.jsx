@@ -8,6 +8,9 @@ import {
 } from "../../services/adminTaskService";
 
 const emptyForm = {
+  task_url: "",
+task_button_text: "Открыть задание",
+task_type: "other",
   title: "",
   description: "",
   short_description: "",
@@ -52,8 +55,13 @@ export default function TaskManager() {
   }
 
   function startEdit(task) {
+    
+    
     setEditingId(task.id);
     setForm({
+      task_url: task.task_url || "",
+task_button_text: task.task_button_text || "Открыть задание",
+task_type: task.task_type || "other",
       title: task.title || "",
       description: task.description || "",
       short_description: task.short_description || "",
@@ -161,6 +169,33 @@ export default function TaskManager() {
           onChange={(event) => updateField("instruction", event.target.value)}
         />
 
+
+<input
+  className="app-input"
+  placeholder="Ссылка задания"
+  value={form.task_url}
+  onChange={(event) => updateField("task_url", event.target.value)}
+/>
+
+<input
+  className="app-input"
+  placeholder="Текст кнопки"
+  value={form.task_button_text}
+  onChange={(event) => updateField("task_button_text", event.target.value)}
+/>
+
+<select
+  className="app-input"
+  value={form.task_type}
+  onChange={(event) => updateField("task_type", event.target.value)}
+>
+  <option value="telegram">Telegram</option>
+  <option value="hh">HH</option>
+  <option value="vk">VK</option>
+  <option value="youtube">YouTube</option>
+  <option value="website">Сайт</option>
+  <option value="other">Другое</option>
+</select>
         <div className="admin-form-grid">
           <input
             className="app-input"
