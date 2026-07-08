@@ -1,0 +1,32 @@
+:root {
+  --bg-main: #080d1c;
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --bg-card-strong: rgba(255, 255, 255, 0.13);
+
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.66);
+  --text-soft: rgba(255, 255, 255, 0.42);
+
+  --accent-blue: #6c7cff;
+  --accent-green: #00ffb2;
+  --accent-purple: #a855f7;
+  --danger: #ff4d6d;
+  --warning: #ffd166;
+
+  --gradient-main: linear-gradient(135deg, #6c7cff, #00d99e);
+  --gradient-card: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0.04)
+  );
+
+  --border-light: rgba(255, 255, 255, 0.14);
+  --shadow-card: 0 24px 70px rgba(0, 0, 0, 0.35);
+
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+
+  --page-max-width: 430px;
+}
