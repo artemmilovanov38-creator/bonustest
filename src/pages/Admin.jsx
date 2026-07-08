@@ -37,12 +37,16 @@ const adminTabs = [
   { id: "settings", label: "Настройки", icon: Settings, roles: ["owner"] },
 ];
 
+
 export default function Admin({ user, showToast }) {
   const role = user?.role || "user";
 
 const isManager = ["manager", "admin", "owner"].includes(role);
 const isAdmin = ["admin", "owner"].includes(role);
 const isOwner = role === "owner";
+const visibleAdminTabs = adminTabs.filter((tab) =>
+  tab.roles.includes(role)
+);
   const [activeAdminTab, setActiveAdminTab] = useState(
   user?.role === "manager" ? "review" : "dashboard"
 );
@@ -64,11 +68,11 @@ const isOwner = role === "owner";
   const [pendingTasks, setPendingTasks] = useState([]);
   const [withdrawRequests, setWithdrawRequests] = useState([]);
 
-  useEffect(() => {
-    if (user?.is_admin) {
-      loadStats();
-    }
-  }, [user]);
+ useEffect(() => {
+  if (isManager) {
+    loadStats();
+  }
+}, [isManager]);
 
   async function loadStats() {
     try {
@@ -167,9 +171,7 @@ const analyticsData = await getAdminAnalytics();
 }
 
   if (!isManager) {
-    const visibleAdminTabs = adminTabs.filter((tab) =>
-  tab.roles.includes(role)
-);
+   ;
     return (
       <main className="page admin-page">
         <div className="app-card empty-state" style={{ padding: 24 }}>
