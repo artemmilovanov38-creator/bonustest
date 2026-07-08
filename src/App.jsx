@@ -30,6 +30,9 @@ function parseStartParam() {
   return fromTelegram || fromUrl || null;
 }
 
+window.addEventListener("error", (event) => {
+  alert(event.message);
+});
 export default function App() {
   const [appUser, setAppUser] = useState(null);
   const [loading, setLoading] = useState(true);
