@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase";
 import { WITHDRAW_STATUS } from "../constants/statuses";
+import { getAppContent } from "./contentService";
 
 
 export async function getWithdrawRequests(userId) {
@@ -22,6 +23,21 @@ export async function createWithdrawRequest({ userId, amount, wallet }) {
     .single();
 
   if (userError) throw userError;
+  const content = await getAppContent();
+
+const minWithdraw = Number(content["settings.min_withdraw_amount"] || 0);
+const withdrawsEnabled = content["settings.withdraws_enabled"] !== "false";
+
+if (!withdrawsEnabled) {
+  throw new Error(
+    content["settings.withdraws_disabled_text"] ||
+      "Выводы временно недоступны"
+  );
+}
+
+if (Number(amount) < minWithdraw) {
+  throw new Error(`Минимальная сумма вывода — ${minWithdraw} ₽`);
+}
 
   if (Number(amount) <= 0) {
     throw new Error("Введите корректную сумму");

@@ -13,7 +13,7 @@ const navItems = [
 export default function BottomNav({ user }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const visibleNavItems = navItems.filter((item) => !item.adminOnly || user?.is_admin);
+  const visibleNavItems = navItems.filter((item) => !item.adminOnly || ["manager", "admin", "owner"].includes(user?.role));
 
   return (
     <nav className="bottom-nav premium-nav">

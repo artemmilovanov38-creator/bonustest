@@ -3349,3 +3349,31 @@ opacity:1;
   width: 18px;
   background: var(--accent-green);
 }
+.tasks-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0 18px;
+  padding: 6px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-light);
+}
+
+.tasks-tabs button {
+  border: none;
+  border-radius: 17px;
+  padding: 13px 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.tasks-tabs button.active {
+  background: var(--gradient-main);
+  color: white;
+  box-shadow: 0 12px 30px rgba(0, 217, 158, 0.22);
+}

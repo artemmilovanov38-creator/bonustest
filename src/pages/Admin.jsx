@@ -27,18 +27,25 @@ import {
 } from "../services/adminService";
 
 const adminTabs = [
-  { id: "content", label: "Контент", icon: FileText },
-  { id: "banners", label: "Баннеры", icon: Megaphone },
-  { id: "dashboard", label: "Дашборд", icon: BarChart3 },
-  { id: "review", label: "Проверка", icon: ClipboardCheck },
-  { id: "withdraws", label: "Выплаты", icon: CreditCard },
-  { id: "tasks", label: "Задания", icon: ListTodo },
-  { id: "users", label: "Пользователи", icon: Users },
-  { id: "settings", label: "Настройки", icon: Settings },
+  { id: "dashboard", label: "Дашборд", icon: BarChart3, roles: ["admin", "owner"] },
+  { id: "review", label: "Проверка", icon: ClipboardCheck, roles: ["manager", "admin", "owner"] },
+  { id: "withdraws", label: "Выплаты", icon: CreditCard, roles: ["admin", "owner"] },
+  { id: "tasks", label: "Задания", icon: ListTodo, roles: ["admin", "owner"] },
+  { id: "users", label: "Пользователи", icon: Users, roles: ["admin", "owner"] },
+  { id: "content", label: "Контент", icon: FileText, roles: ["admin", "owner"] },
+  { id: "banners", label: "Баннеры", icon: Megaphone, roles: ["admin", "owner"] },
+  { id: "settings", label: "Настройки", icon: Settings, roles: ["owner"] },
 ];
 
 export default function Admin({ user, showToast }) {
-  const [activeAdminTab, setActiveAdminTab] = useState("dashboard");
+  const role = user?.role || "user";
+
+const isManager = ["manager", "admin", "owner"].includes(role);
+const isAdmin = ["admin", "owner"].includes(role);
+const isOwner = role === "owner";
+  const [activeAdminTab, setActiveAdminTab] = useState(
+  user?.role === "manager" ? "review" : "dashboard"
+);
 
   const [stats, setStats] = useState({
     usersCount: 0,
@@ -159,7 +166,10 @@ const analyticsData = await getAdminAnalytics();
   }
 }
 
-  if (!user?.is_admin) {
+  if (!isManager) {
+    const visibleAdminTabs = adminTabs.filter((tab) =>
+  tab.roles.includes(role)
+);
     return (
       <main className="page admin-page">
         <div className="app-card empty-state" style={{ padding: 24 }}>
@@ -374,7 +384,7 @@ if (activeAdminTab === "content") {
       </section>
 
       <section className="admin-control-panel app-card">
-        {adminTabs.map((tab) => {
+        {visibleAdminTabs.map((tab) => {
           const Icon = tab.icon;
 
           return (

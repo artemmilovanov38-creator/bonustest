@@ -35,6 +35,11 @@ export default function ContentManager({ showToast }) {
     id: "home",
     title: "Главная",
   },
+
+  {
+  id: "settings",
+  title: "Настройки",
+},
   {
     id: "onboarding",
     title: "Онбординг",
