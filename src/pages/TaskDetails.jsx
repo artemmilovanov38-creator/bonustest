@@ -130,52 +130,58 @@ export default function TaskDetails({ user }) {
       </section>
 
       {userTask ? (
-        <section className="app-card task-status-card">
-          <span>✅</span>
-          <h2>Задание отправлено</h2>
-          <p>
-            Статус:{" "}
-            {userTask.status === "pending"
-              ? "на проверке"
-              : userTask.status === "approved"
-                ? "одобрено"
-                : "отклонено"}
-          </p>
-        </section>
-        
-      ) : (
-        task?.task_url && (
-  <a
-    className="task-open-link"
-    href={task.task_url}
-    target="_blank"
-    rel="noreferrer"
-  >
-    {task.task_button_text || "Открыть задание"}
-  </a>
-)
-        )  (
-        
-        <section className="app-card proof-card">
-          <h2>Загрузить скриншот</h2>
+  <section className="app-card task-status-card">
+    <span>✅</span>
+    <h2>Задание отправлено</h2>
 
-          <label className="proof-upload">
-            <Upload />
-            <span>{file ? file.name : "Нажми, чтобы выбрать файл"}</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(event) => setFile(event.target.files?.[0] || null)}
-            />
-          </label>
+    <p>
+      Статус:{" "}
+      {userTask.status === "pending"
+        ? "на проверке"
+        : userTask.status === "approved"
+        ? "одобрено"
+        : "отклонено"}
+    </p>
+  </section>
+) : (
+  <>
+    {task?.task_url && (
+      <a
+        className="task-open-link"
+        href={task.task_url}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {task.task_button_text || "Открыть задание"}
+      </a>
+    )}
 
-          {error && <p className="form-error">{error}</p>}
+    <section className="app-card proof-card">
+      <h2>Загрузить скриншот</h2>
 
-          <button className="app-button" disabled={sending} onClick={handleSubmit}>
-            {sending ? "Отправляем..." : "Отправить на проверку"}
-          </button>
-        </section>
-      )}
+      <label className="proof-upload">
+        <Upload />
+        <span>{file ? file.name : "Нажми, чтобы выбрать файл"}</span>
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(event) => setFile(event.target.files?.[0] || null)}
+        />
+      </label>
+
+      {error && <p className="form-error">{error}</p>}
+
+      <button
+        className="app-button"
+        disabled={sending}
+        onClick={handleSubmit}
+      >
+        {sending ? "Отправляем..." : "Отправить на проверку"}
+      </button>
+    </section>
+  </>
+)}
     </main>
   );
 }
