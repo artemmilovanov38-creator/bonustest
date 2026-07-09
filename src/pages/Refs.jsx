@@ -5,7 +5,7 @@ import Button from "../components/ui/Button";
 export default function Refs({ user }) {
   const botUsername = "bonustest_bot";
 
-  const miniAppName = "ИМЯ_ТВОЕГО_MINI_APP";
+  const miniAppName = "BONUSTEST";
 
 const refLink = `https://t.me/${botUsername}/${miniAppName}?startapp=${user?.telegram_id}`;
 
