@@ -3,10 +3,10 @@ import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
 
 export default function Refs({ user }) {
-  const botUsername = "@BonusSTest_bot";
+  const botUsername = "BonusSTest_bot";
   const miniAppName = "bonustest";
 
-  const refLink = `https://t.me/${botUsername}/${miniAppName}?startapp=${user?.telegram_id}`;
+  const refLink = `https://t.me/${botUsername}?startapp=${user?.telegram_id}`;
 
   function shareRefLink() {
     const text = "Присоединяйся к BONUSTEST и зарабатывай вместе со мной";
