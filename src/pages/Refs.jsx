@@ -3,7 +3,7 @@ import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
 
 export default function Refs({ user }) {
-  const botUsername = "bonustest_bot";
+  const botUsername = "@BonusSTest_bot";
   const miniAppName = "bonustest";
 
   const refLink = `https://t.me/${botUsername}/${miniAppName}?startapp=${user?.telegram_id}`;
