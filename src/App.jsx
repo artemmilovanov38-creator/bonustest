@@ -25,7 +25,12 @@ import "./index.css";
 
 function parseStartParam() {
   const fromTelegram = window.Telegram?.WebApp?.initDataUnsafe?.start_param;
-  const fromUrl = new URLSearchParams(window.location.search).get("start");
+
+  const params = new URLSearchParams(window.location.search);
+
+  const fromUrl =
+    params.get("startapp") ||
+    params.get("start");
 
   return fromTelegram || fromUrl || null;
 }
