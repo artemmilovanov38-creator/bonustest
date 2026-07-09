@@ -12,6 +12,11 @@ const refLink = `https://t.me/${botUsername}/${miniAppName}?startapp=${user?.tel
   async function copyRefLink() {
     try {
       await navigator.clipboard.writeText(refLink);
+      setToast({
+  type: "success",
+  title: "Ссылка скопирована",
+  text: "Отправь её друзьям и зарабатывай вместе с BONUSTEST.",
+});
       alert("Ссылка скопирована");
     } catch {
       alert("Не удалось скопировать ссылку");
